@@ -55,7 +55,6 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
-@Disabled
 public class Teleop extends OpMode{
 
     /* Declare OpMode members. */
@@ -63,6 +62,7 @@ public class Teleop extends OpMode{
                                                          // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+    double          WINGED_POS  = 0.5;
 
 
     /*
@@ -114,20 +114,23 @@ public class Teleop extends OpMode{
             clawOffset -= CLAW_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
+        //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
+        //robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
+        //robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
+
         if (gamepad1.y)
-            robot.armMotor.setPower(robot.ARM_UP_POWER);
+            robot.wing.setPosition(robot.WING_HALVED);
         else if (gamepad1.a)
-            robot.armMotor.setPower(robot.ARM_DOWN_POWER);
-        else
-            robot.armMotor.setPower(0.0);
+            robot.wing.setPosition(robot.WING_ZEROED);
+
+        //WINGED_POS = robot.wing.getPosition();
+
+
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+        //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
     }
