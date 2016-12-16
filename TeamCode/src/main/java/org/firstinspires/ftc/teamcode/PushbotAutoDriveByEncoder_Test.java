@@ -33,36 +33,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.lasarobotics.vision.android.Cameras;
+import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
-import org.firstinspires.ftc.teamcode.HardwarePushbot;
+import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
+import org.lasarobotics.vision.util.ScreenOrientation;
+import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: Test", group="Pushbot")
+@Autonomous(name="Pushbot: TestBot", group="Pushbot")
 public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
-
     /* Declare OpMode members. */
-    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+    HardwarePushbotTeam robot   = new HardwarePushbotTeam();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
-
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.7 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 3.6 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.99;
+                                                      (WHEEL_DIAMETER_INCHES * Math.PI);
+    static final double     DRIVE_SPEED             = 1.00;
     static final double     TURN_SPEED              = 0.5;
-
+    public static final double BEACONLEFT_ZEROED  = 0.0 ;
+    public static final double BEACONLEFT_PRESS  = 0.5 ;
+    public static final double BEACONRIGHT_ZEROED  = 1.0 ;
+    public static final double BEACONRIGHT_PRESS  = 0.5 ;
     public void idle(){
-
-
     }
-
     @Override
     public void runOpMode() throws InterruptedException {
-
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -76,37 +76,20 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :0",
-                          robot.leftMotor.getCurrentPosition()
-                          //robot.rightMotor.getCurrentPosition());
+        telemetry.addData("Path0",  "Starting at %7d : %7d",
+                          robot.leftMotor.getCurrentPosition(),
+                          robot.rightMotor.getCurrentPosition()
         );
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        //encoderDrive(DRIVE_SPEED,  100,  100, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        //telemetry.addData("Path31", "Complete");
-        //telemetry.update();
         encoderDrive(TURN_SPEED,   48, -48, 100.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //telemetry.addData("Path31", "Complete");
-        //telemetry.update();
         encoderDrive(DRIVE_SPEED, -48, 48, 100.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-        robot.wing.setPosition(.5);
-        //telemetry.addData("Path31", "Complete");
-        //telemetry.update();
-
-        //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
-        //robot.rightClaw.setPosition(0.0);
+        boolean blueLeft = visionFind();
+        visionAct(blueLeft);
         sleep(1000);     // pause for servos to move
-
-        //telemetry.addData("Path", "Complete");
-        //telemetry.update();
     }
-
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -126,18 +109,18 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
 
             // Determine new target position, and pass to motor controller
             newLeftTarget = (robot.leftMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH));
-            //newRightTarget = (robot.rightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH));
+            newRightTarget = (robot.rightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH));
             robot.leftMotor.setTargetPosition(newLeftTarget);
-            //robot.rightMotor.setTargetPosition(newRightTarget);
+            robot.rightMotor.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
             robot.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //robot.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
             robot.leftMotor.setPower(Math.abs(speed));
-            //robot.rightMotor.setPower(Math.abs(speed));
+            robot.rightMotor.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
@@ -145,21 +128,71 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
                    (robot.leftMotor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  0);
-                telemetry.addData("Path2",  "Running at %7d : 0",
-                                            robot.leftMotor.getCurrentPosition());
-                                            //robot.rightMotor.getCurrentPosition());
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d : %7d",
+                                            robot.leftMotor.getCurrentPosition(),
+                                            robot.rightMotor.getCurrentPosition());
                 telemetry.update();
             }
 
             // Stop all motion;
             robot.leftMotor.setPower(0);
-            //robot.rightMotor.setPower(0);
+            robot.rightMotor.setPower(0);
 
             // Turn off RUN_TO_POSITION
             robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            //robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //  sleep(250);   // optional pause after each move
+        }
+    }
+    int frameCount = 0;
+    int blueCount = 0;
+    public boolean visionFind() throws InterruptedException{
+        boolean blueLeft;
+        waitForVisionStart();
+        this.setCamera(Cameras.PRIMARY); //Secondary for front.
+        this.setFrameSize(new Size(900, 900));
+        enableExtension(Extensions.BEACON);         //Beacon detection
+        enableExtension(Extensions.ROTATION);       //Automatic screen rotation correction
+        enableExtension(Extensions.CAMERA_CONTROL); //Manual camera control
+        beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
+        beacon.setColorToleranceBlue(0.0);
+        beacon.setColorToleranceRed(0.0);
+        rotation.setIsUsingSecondaryCamera(false);
+        rotation.disableAutoRotate();
+        rotation.setActivityOrientationFixed(ScreenOrientation.PORTRAIT);
+        cameraControl.setColorTemperature(CameraControlExtension.ColorTemperature.AUTO);
+        cameraControl.setAutoExposureCompensation();
+        for (int i = 0; i < 20; i++) { //telemetry additions for camera details
+            //Log a few things
+            telemetry.addData("Beacon Color", beacon.getAnalysis().getColorString());
+            telemetry.addData("Beacon Center", beacon.getAnalysis().getLocationString());
+            telemetry.addData("Beacon Confidence", beacon.getAnalysis().getConfidenceString());
+            telemetry.addData("Beacon Buttons", beacon.getAnalysis().getButtonString());
+            telemetry.addData("Screen Rotation", rotation.getScreenOrientationActual());
+            telemetry.addData("Frame Rate", fps.getFPSString() + " FPS");
+            telemetry.addData("Frame Size", "Width: " + width + " Height: " + height);
+            telemetry.addData("Frame Counter", frameCount);
+            if (beacon.getAnalysis().getColorString().startsWith("blue")) {
+                blueCount += 1;
+            }
+
+            waitOneFullHardwareCycle();
+        }
+        if (blueCount >= 5) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public void visionAct (boolean blueLeft){
+        if (blueLeft == true){
+            robot.leftBeacon.setPosition(BEACONLEFT_PRESS);
+            encoderDrive(1.0,5,5,100.0);
+        }
+        else if (blueLeft == false){
+            robot.rightBeacon.setPosition(BEACONRIGHT_PRESS);
+            encoderDrive(1.0, 5, 5, 100.0);
         }
     }
 }

@@ -32,19 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+//import org.firstinspires.ftc.teamcode.HardwarePushbotTeam;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
  *
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
- * All device access is managed through the HardwarePushbot class.
+ * All device access is managed through the HardwarePushbotTeam class.
  *
  * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
@@ -58,11 +56,12 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class Teleop extends OpMode{
 
     /* Declare OpMode members. */
-    HardwarePushbot robot       = new HardwarePushbot(); // use the class created to define a Pushbot's hardware
+    HardwarePushbotTeam robot       = new HardwarePushbotTeam(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
-    double          clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
-    double          WINGED_POS  = 0.5;
+    public static final double BEACONLEFT_ZEROED  = 0.0 ;
+    public static final double BEACONLEFT_PRESS  = 0.5 ;
+    public static final double BEACONRIGHT_ZEROED  = 1.0 ;
+    public static final double BEACONRIGHT_PRESS  = 0.5 ;
 
 
     /*
@@ -98,20 +97,32 @@ public class Teleop extends OpMode{
      */
     @Override
     public void loop() {
-        double left;
-        double right;
+        double leftDrive;
+        double rightDrive;
+        double rightFling;
+        double leftFling;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower(right);
+        leftDrive = -gamepad1.left_stick_y;
+        rightDrive = -gamepad1.right_stick_y;
+        robot.leftMotor.setPower(leftDrive);
+        robot.rightMotor.setPower(rightDrive);
+        leftFling = -gamepad2.left_stick_y;
+        //rightDrive = -gamepad2.right_stick_y;
+        robot.flingOne.setPower(leftFling);
+        robot.flingTwo.setPower(leftFling);
+        //robot.flingTwo.setPower(leftFling);
+        //robot.rightMotor.setPower(rightDrive);
 
         // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
+        if (gamepad1.right_bumper){
+
+        }
+
+        else if (gamepad1.left_bumper){
+
+        }
+
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         //clawOffset = Range.clip(clawOffset, -0.5, 0.5);
@@ -120,10 +131,18 @@ public class Teleop extends OpMode{
 
         // Use gamepad buttons to move the arm up (Y) and down (A)
 
-        if (gamepad1.y)
-            robot.wing.setPosition(robot.WING_HALVED);
-        else if (gamepad1.a)
-            robot.wing.setPosition(robot.WING_ZEROED);
+        if (gamepad1.y) {
+            //robot..setPosition(robot.WING_HALVED);
+        }
+        else if (gamepad1.a){
+            //robot.wing.setPosition(robot.WING_ZEROED);
+        }
+        if (gamepad1.left_trigger>.5){
+            
+        }
+
+
+
 
         //WINGED_POS = robot.wing.getPosition();
 
@@ -131,8 +150,10 @@ public class Teleop extends OpMode{
 
         // Send telemetry message to signify robot running;
         //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("left",  "%.2f", leftDrive);
+        telemetry.addData("right", "%.2f", rightDrive);
+
+
     }
 
     /*
