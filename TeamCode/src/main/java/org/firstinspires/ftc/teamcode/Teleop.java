@@ -138,7 +138,7 @@ public class Teleop extends OpMode{
             //robot.wing.setPosition(robot.WING_ZEROED);
         }
         if (gamepad1.left_trigger>.5){
-            
+
         }
 
 
