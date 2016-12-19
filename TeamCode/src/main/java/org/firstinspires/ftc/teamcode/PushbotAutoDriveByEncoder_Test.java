@@ -67,6 +67,19 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
+        int x = 1;
+        switch(x){
+            default:
+                x = 1;
+            case 1:
+                encoderDrive(1.0, 10, 10, 10);
+                x = 2;
+            case 2:
+                encoderDrive(1.0, 10, -10, 10);
+                x=3;
+            case 3:
+
+        }
         robot.init(hardwareMap);
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();

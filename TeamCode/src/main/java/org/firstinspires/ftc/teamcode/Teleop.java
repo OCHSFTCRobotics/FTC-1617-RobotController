@@ -133,6 +133,7 @@ public class Teleop extends OpMode{
 
         if (gamepad1.y) {
             //robot..setPosition(robot.WING_HALVED);
+            
         }
         else if (gamepad1.a){
             //robot.wing.setPosition(robot.WING_ZEROED);
@@ -152,6 +153,7 @@ public class Teleop extends OpMode{
         //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
         telemetry.addData("left",  "%.2f", leftDrive);
         telemetry.addData("right", "%.2f", rightDrive);
+
 
 
     }
