@@ -67,19 +67,7 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        int x = 1;
-        switch(x){
-            default:
-                x = 1;
-            case 1:
-                encoderDrive(1.0, 10, 10, 10);
-                x = 2;
-            case 2:
-                encoderDrive(1.0, 10, -10, 10);
-                x=3;
-            case 3:
 
-        }
         robot.init(hardwareMap);
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
@@ -96,9 +84,20 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        int x = 1;
+        switch(x){
+            default:
+                x = 1;
+            case 1:
+                encoderDrive(0.1, 10, 10, 10);
+                x=2;
+            case 2:
+                encoderDrive(1.0, 10, -10, 10);
+                x=3;
+            case 3:
 
-        encoderDrive(TURN_SPEED,   48, -48, 100.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -48, 48, 100.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        }
+
         boolean blueLeft = visionFind();
         visionAct(blueLeft);
         sleep(1000);     // pause for servos to move
