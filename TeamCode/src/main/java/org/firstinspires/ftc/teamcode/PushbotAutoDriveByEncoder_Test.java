@@ -61,6 +61,10 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
     public static final double BEACONRIGHT_PRESS  = 0.5 ;
     public void idle(){
     }
+    public void loop(){
+        super.loop();
+
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         /*
@@ -95,6 +99,7 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
                 encoderDrive(1.0, 10, -10, 10);
                 x=3;
             case 3:
+
 
         }
 

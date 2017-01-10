@@ -124,7 +124,7 @@ public abstract class LinearVisionOpMode extends VisionOpMode {
     }
 
     @Override
-    public final void loop() {
+    public void loop() {
         super.loop();
         this.notifyOrThrowError();
     }
