@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,6 +31,8 @@ public class HardwarePushbotTeam
     public DcMotor  flingTwo    = null;
     public Servo    rightBeacon = null;
     public Servo    leftBeacon  = null;
+    public ColorSensor frontColor = null;
+
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -64,6 +67,8 @@ public class HardwarePushbotTeam
         leftBeacon  = hwMap.servo.get("beaconLeft");
         rightBeacon = hwMap.servo.get("beaconRight");
 
+        frontColor = hwMap.colorSensor.get("frontColor");
+
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
@@ -82,6 +87,8 @@ public class HardwarePushbotTeam
 
         leftBeacon.setPosition(BEACONLEFT_ZEROED);
         rightBeacon.setPosition(BEACONRIGHT_ZEROED);
+
+        frontColor.enableLed(true);
     }
 
     /***

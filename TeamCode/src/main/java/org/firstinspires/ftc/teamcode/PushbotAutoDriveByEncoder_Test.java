@@ -48,13 +48,13 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam robot   = new HardwarePushbotTeam();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = 1440;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 3.6 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double     DRIVE_SPEED             = 1.00;
-    static final double     TURN_SPEED              = 0.5;
+    static final double     DRIVE_SPEED             = 0.85;
+    static final double     TURN_SPEED              = 0.3;
     public static final double BEACONLEFT_ZEROED  = 0.0 ;
     public static final double BEACONLEFT_PRESS  = 0.5 ;
     public static final double BEACONRIGHT_ZEROED  = 1.0 ;
@@ -76,10 +76,10 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         idle();
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d : %7d",
                           robot.leftMotor.getCurrentPosition(),
@@ -88,24 +88,30 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        int x = 1;
-        switch(x){
-            default:
-                x = 1;
-            case 1:
-                encoderDrive(0.1, 10, 10, 10);
-                x=2;
-            case 2:
-                encoderDrive(1.0, 10, -10, 10);
-                x=3;
-            case 3:
 
+        //Loop for cases.
+        while(opModeIsActive()){
+            int x = 1;
+            int colorCount = 0;
+            switch(x){
+                default:
+                    x = 1;
+                case 1: //move forward 10 inches at DRIVE_SPEED.
+                    encoderDrive(DRIVE_SPEED, 10, 10, 10);
+                    x=2;
+                case 2:
+                    encoderDrive(TURN_SPEED, 10, -10, 10);
+                    x=3;
+                case 3:
+                    telemetry.addData("Clear", robot.frontColor.alpha());
+                    telemetry.update();
+                    colorCount ++;
+                    if (colorCount == 30){
+                        break;
+                    }
+            }
 
         }
-
-        boolean blueLeft = visionFind();
-        visionAct(blueLeft);
-        sleep(1000);     // pause for servos to move
     }
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
