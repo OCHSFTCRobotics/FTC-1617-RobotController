@@ -90,26 +90,25 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         waitForStart();
 
         //Loop for cases.
-        while(opModeIsActive()){
-            int x = 1;
-            int colorCount = 0;
-            switch(x){
-                default:
-                    x = 1;
-                case 1: //move forward 10 inches at DRIVE_SPEED.
-                    encoderDrive(DRIVE_SPEED, 10, 10, 10);
-                    x=2;
-                case 2:
-                    encoderDrive(TURN_SPEED, 10, -10, 10);
-                    x=3;
-                case 3:
-                    telemetry.addData("Clear", robot.frontColor.alpha());
-                    telemetry.update();
-                    colorCount ++;
-                    if (colorCount == 30){
-                        break;
-                    }
-            }
+
+        int x = 1;
+        int colorCount = 0;
+        switch(x){
+            default:
+                x = 1;
+            case 1: //move forward 10 inches at DRIVE_SPEED.
+                encoderDrive(DRIVE_SPEED, 10, 10, 10);
+                x=2;
+            case 2:
+                encoderDrive(TURN_SPEED, 10, -10, 10);
+                x=3;
+            case 3:
+                telemetry.addData("Clear", robot.frontColor.alpha());
+                telemetry.update();
+                colorCount ++;
+                visionFind();
+
+
 
         }
     }
