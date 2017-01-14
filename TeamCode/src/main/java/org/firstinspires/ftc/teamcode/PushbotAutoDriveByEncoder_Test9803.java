@@ -43,22 +43,22 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: TestBot", group="Pushbot")
-public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 9803 TestBot", group="9803")
+public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
     /* Declare OpMode members. */
-    HardwarePushbotTeam robot   = new HardwarePushbotTeam();   // Use a Pushbot's hardware
+    HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
-    static final double     COUNTS_PER_MOTOR_REV    = 1440;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.6 ;     // For figuring circumference
+    static final double     COUNTS_PER_MOTOR_REV    = 280;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 3.9375 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.85;
     static final double     TURN_SPEED              = 0.3;
-    public static final double BEACONLEFT_ZEROED  = 0.0 ;
-    public static final double BEACONLEFT_PRESS  = 0.5 ;
-    public static final double BEACONRIGHT_ZEROED  = 1.0 ;
-    public static final double BEACONRIGHT_PRESS  = 0.5 ;
+    public static final double BEACONLEFT_ZEROED    = 0.0;
+    public static final double BEACONLEFT_PRESS     = 0.5;
+    public static final double BEACONRIGHT_ZEROED   = 1.0;
+    public static final double BEACONRIGHT_PRESS    = 0.5;
     public void idle(){
     }
     public void loop(){
@@ -89,7 +89,7 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        //Loop for cases.
+        //cases
 
         int x = 1;
         int colorCount = 0;
@@ -97,16 +97,34 @@ public class PushbotAutoDriveByEncoder_Test extends LinearVisionOpMode {
             default:
                 x = 1;
             case 1: //move forward 10 inches at DRIVE_SPEED.
-                encoderDrive(DRIVE_SPEED, 10, 10, 10);
+                encoderDrive(DRIVE_SPEED, 24, 24, 10);
                 x=2;
             case 2:
-                encoderDrive(TURN_SPEED, 10, -10, 10);
+                encoderDrive(TURN_SPEED, 5, 1, 10);
                 x=3;
             case 3:
+                encoderDrive(DRIVE_SPEED, 45, 45, 10);
+                x=4;
+            case 4:
+                encoderDrive(TURN_SPEED, 1, 5, 10);
+                x=5;
+            case 5:
                 telemetry.addData("Clear", robot.frontColor.alpha());
                 telemetry.update();
-                colorCount ++;
-                visionFind();
+                if (robot.frontColor.alpha()>= 1){
+                    x=6;
+                }
+                else if (robot.frontColor.alpha()<1){
+                    robot.leftMotor.setPower(0.1);
+                    robot.rightMotor.setPower(0.1);
+                }
+            case 6:
+                encoderDrive(TURN_SPEED, 3, -3, 8);
+                encoderDrive(DRIVE_SPEED, 10, 10, 10);
+                boolean beacon = visionFind();
+                visionAct(beacon);
+                x=7;
+
 
 
 

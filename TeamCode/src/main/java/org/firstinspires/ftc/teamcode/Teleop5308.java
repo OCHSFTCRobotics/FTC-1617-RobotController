@@ -35,16 +35,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//import org.firstinspires.ftc.teamcode.HardwarePushbotTeam;
+//import org.firstinspires.ftc.teamcode.HardwarePushbotTeam5308;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
  *
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
- * All device access is managed through the HardwarePushbotTeam class.
+ * All device access is managed through the HardwarePushbotTeam5308 class.
  *
- * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
+ * This particular OpMode executes a basic Tank Drive Teleop5308 for a PushBot
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
  *
@@ -52,11 +52,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
-public class Teleop extends OpMode{
+@TeleOp(name="Pushbot: 5308 Teleop", group="5308")
+public class Teleop5308 extends OpMode{
 
     /* Declare OpMode members. */
-    HardwarePushbotTeam robot       = new HardwarePushbotTeam(); // use the class created to define a Pushbot's hardware
+    HardwarePushbotTeam5308 robot       = new HardwarePushbotTeam5308(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     public static final double BEACONLEFT_ZEROED  = 0.0 ;
     public static final double BEACONLEFT_PRESS  = 0.5 ;
@@ -103,8 +103,8 @@ public class Teleop extends OpMode{
         double leftFling;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftDrive = -gamepad1.left_stick_y;
-        rightDrive = -gamepad1.right_stick_y;
+        leftDrive = gamepad1.left_stick_y;
+        rightDrive = gamepad1.right_stick_y;
         robot.leftMotor.setPower(leftDrive);
         robot.rightMotor.setPower(rightDrive);
         leftFling = -gamepad2.left_stick_y;
@@ -114,14 +114,24 @@ public class Teleop extends OpMode{
         //robot.flingTwo.setPower(leftFling);
         //robot.rightMotor.setPower(rightDrive);
 
-        // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper){
+        // Use gamepad left & right Bumpers to open and close the wings
+        if (gamepad2.right_bumper){
+            robot.wingRight.setPosition(0.55);
+        }
+        else if (!gamepad2.right_bumper){
+            robot.wingRight.setPosition(1.0);
+        }
+        if (gamepad2.left_bumper){
+            robot.wingLeft.setPosition(0.55);
+        }
+        else if (!gamepad2.left_bumper){
+            robot.wingLeft.setPosition(0.0);
+        }
+
+        if (gamepad2.a){
 
         }
 
-        else if (gamepad1.left_bumper){
-
-        }
 
 
         // Move both servos to new position.  Assume servos are mirror image of each other.

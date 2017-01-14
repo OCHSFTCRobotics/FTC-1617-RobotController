@@ -22,13 +22,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwarePushbotTeam
+public class HardwarePushbotTeam9803
 {
     /* Public OpMode members. */
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
-    public DcMotor  flingOne    = null;
-    public DcMotor  flingTwo    = null;
+    public DcMotor  ballDrive    = null;
+    public DcMotor  pushDrive    = null;
     public Servo    rightBeacon = null;
     public Servo    leftBeacon  = null;
     public ColorSensor frontColor = null;
@@ -47,7 +47,7 @@ public class HardwarePushbotTeam
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor  */
-    public HardwarePushbotTeam(){
+    public HardwarePushbotTeam9803(){
 
     }
 
@@ -59,21 +59,22 @@ public class HardwarePushbotTeam
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("leftDrive");
         rightMotor  = hwMap.dcMotor.get("rightDrive");
-        flingOne    = hwMap.dcMotor.get("flingOne");
-        flingTwo    = hwMap.dcMotor.get("flingTwo");
+        ballDrive    = hwMap.dcMotor.get("ballDrive");
+        pushDrive    = hwMap.dcMotor.get("pushDrive");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         leftBeacon  = hwMap.servo.get("beaconLeft");
         rightBeacon = hwMap.servo.get("beaconRight");
 
+
         frontColor = hwMap.colorSensor.get("frontColor");
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        flingOne.setPower(0);
-        flingTwo.setPower(0.0);
+        pushDrive.setPower(0);
+        ballDrive.setPower(0.0);
         leftMotor.setMaxSpeed(1800);
         rightMotor.setMaxSpeed(1800);
 
@@ -82,8 +83,8 @@ public class HardwarePushbotTeam
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flingOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flingTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        ballDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pushDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftBeacon.setPosition(BEACONLEFT_ZEROED);
         rightBeacon.setPosition(BEACONRIGHT_ZEROED);
