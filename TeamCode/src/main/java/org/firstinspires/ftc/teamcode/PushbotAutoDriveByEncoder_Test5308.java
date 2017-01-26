@@ -32,6 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -43,7 +45,7 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: 5308 TestBot", group="5308")
+@Autonomous(name="Pushbot: 5308 TestBot Blue", group="5308")
 public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam5308 robot   = new HardwarePushbotTeam5308();   // Use a Pushbot's hardware
@@ -90,7 +92,10 @@ public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        //Loop for cases.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
 
         int x = 1;
         int colorCount = 0;
@@ -98,29 +103,32 @@ public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
             default:
                 x = 1;
             case 1: //move forward 10 inches at DRIVE_SPEED.
-                encoderDrive(DRIVE_SPEED, 5, 5, 10);
+
+                encoderDrive(.2, 5, 5, 10);
                 x=2;
             case 2:
-                encoderDrive(TURN_SPEED, -15, 15, 10);
+                encoderDrive(TURN_SPEED, -40, 40, 10);
+                encoderDrive(TURN_SPEED, 12, 12, 10);
+                encoderDrive(TURN_SPEED, 20, -20, 10);
                 x=3;
             case 3:
-                encoderDrive(DRIVE_SPEED, 20, 20, 10);
+                encoderDrive(DRIVE_SPEED, 10, 10, 10);
                 x=4;
             case 4:
 
                 encoderDrive(TURN_SPEED, 8, -3, 10);
-                x=5;
+x=5;
             case 5:
-                while (robot.frontColor.alpha()<1){
+                Color.RGBToHSV(robot.frontColor.red(), robot.frontColor.green(), robot.frontColor.blue(), hsvValues);
+                while (hsvValues[0] < 90){
                     encoderDrive(.1, 1, 1, 1);
-                    telemetry.addData("Clear", robot.frontColor.alpha());
+                    telemetry.addData("Hue", hsvValues[0]);
                     telemetry.update();
                     if (robot.frontColor.alpha()>= 1){
                         x=6;
                     }
 
                 }
-                x=6;
             case 6:
                 encoderDrive(TURN_SPEED, 3, -3, 8);
                 encoderDrive(DRIVE_SPEED, 10, 10, 10);

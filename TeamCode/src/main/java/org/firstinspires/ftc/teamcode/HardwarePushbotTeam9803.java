@@ -64,8 +64,8 @@ public class HardwarePushbotTeam9803
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
-        leftBeacon  = hwMap.servo.get("beaconLeft");
-        rightBeacon = hwMap.servo.get("beaconRight");
+        leftBeacon  = hwMap.servo.get("leftBeacon");
+        rightBeacon = hwMap.servo.get("rightBeacon");
 
 
         frontColor = hwMap.colorSensor.get("frontColor");

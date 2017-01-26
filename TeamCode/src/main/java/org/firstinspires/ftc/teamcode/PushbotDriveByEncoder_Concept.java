@@ -98,7 +98,6 @@ public class PushbotDriveByEncoder_Concept extends LinearOpMode {
         // bPrevState and bCurrState represent the previous and current state of the button.
         boolean bPrevState = false;
         boolean bCurrState = false;
-
         // bLedOn represents the state of the LED.
         boolean bLedOn = true;
 

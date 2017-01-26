@@ -62,9 +62,9 @@ public class HardwarePushbotConcept
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-        testColor = hwMap.colorSensor.get("testColor");
-        testDistance = hwMap.opticalDistanceSensor.get("testDistance");
-        testUltrasonic = hwMap.ultrasonicSensor.get("testUltra");
+        testColor = hwMap.colorSensor.get("frontColor");
+        //testDistance = hwMap.opticalDistanceSensor.get("testDistance");
+        //testUltrasonic = hwMap.ultrasonicSensor.get("testUltra");
         /*
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("leftDrive");
@@ -97,7 +97,7 @@ public class HardwarePushbotConcept
         rightBeacon.setPosition(BEACONRIGHT_ZEROED);
         */
         testColor.enableLed(true);
-        testDistance.enableLed(true);
+        //testDistance.enableLed(true);
 
 
     }

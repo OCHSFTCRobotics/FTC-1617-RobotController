@@ -32,6 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -43,16 +45,16 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: 9803 TestBot", group="9803")
-public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 5308 TestBot Red", group="5308")
+public class PushbotDriveByEncoder_RedTest5308 extends LinearVisionOpMode {
     /* Declare OpMode members. */
-    HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803();   // Use a Pushbot's hardware
+    HardwarePushbotTeam5308 robot   = new HardwarePushbotTeam5308();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1440;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 3.9375 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * Math.PI);
+            (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.85;
     static final double     TURN_SPEED              = 0.3;
     public static final double BEACONLEFT_ZEROED    = 0.0;
@@ -77,52 +79,55 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
         telemetry.update();
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontColor.enableLed(true);
         idle();
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d : %7d",
-                          robot.leftMotor.getCurrentPosition(),
-                          robot.rightMotor.getCurrentPosition()
+                robot.leftMotor.getCurrentPosition(),
+                robot.rightMotor.getCurrentPosition()
         );
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        //cases
+        //Loop for cases.
 
         int x = 1;
         int colorCount = 0;
-        encoderDrive(.5, -15.16, 15.16, 10);
-        visionAct(visionFind());
-        /*
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
         switch(x){
             default:
                 x = 1;
             case 1: //move forward 10 inches at DRIVE_SPEED.
-                encoderDrive(DRIVE_SPEED, 48, 48, 10);
+                encoderDrive(DRIVE_SPEED, 5, 5, 10);
                 x=2;
             case 2:
-                encoderDrive(TURN_SPEED, 5, 1, 10);
+                encoderDrive(TURN_SPEED, 20, -20, 10);
                 x=3;
-
-
             case 3:
-                encoderDrive(DRIVE_SPEED, 45, 45, 10);
+                encoderDrive(DRIVE_SPEED, 30, 30, 10);
                 x=4;
             case 4:
-                encoderDrive(TURN_SPEED, 1, 5, 10);
+
+                encoderDrive(TURN_SPEED, -5, 11, 10);
                 x=5;
             case 5:
-                telemetry.addData("Clear", robot.frontColor.alpha());
-                telemetry.update();
-                if (robot.frontColor.alpha()>= 1){
-                    x=6;
+                Color.RGBToHSV(robot.frontColor.red(), robot.frontColor.green(), robot.frontColor.blue(), hsvValues);
+                while (hsvValues[0] < 90){
+                    encoderDrive(.1, 1, 1, 1);
+                    telemetry.addData("Hue", hsvValues[0]);
+                    telemetry.update();
+                    if (robot.frontColor.alpha()>= 1){
+                        x=6;
+                    }
+
                 }
-                else if (robot.frontColor.alpha()<1){
-                    robot.leftMotor.setPower(0.1);
-                    robot.rightMotor.setPower(0.1);
-                }
+                x=6;
             case 6:
                 encoderDrive(TURN_SPEED, 3, -3, 8);
                 encoderDrive(DRIVE_SPEED, 10, 10, 10);
@@ -130,10 +135,10 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
                 visionAct(beacon);
                 x=7;
 
-                    }
 
-                */
 
+
+        }
     }
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
@@ -148,6 +153,7 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
                              double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
+
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
@@ -164,20 +170,20 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.leftMotor.setPower(speed);
-            robot.rightMotor.setPower((speed));
+            robot.leftMotor.setPower(Math.abs(speed));
+            robot.rightMotor.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.leftMotor.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftMotor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Path2",  "Running at %7d : %7d",
-                                            robot.leftMotor.getCurrentPosition(),
-                                            robot.rightMotor.getCurrentPosition());
-                telemetry.update();
+                        robot.leftMotor.getCurrentPosition(),
+                        robot.rightMotor.getCurrentPosition());
+
             }
 
             // Stop all motion;
@@ -194,29 +200,22 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
     int blueCount = 0;
     public boolean visionFind() throws InterruptedException{
         boolean blueLeft;
-
         waitForVisionStart();
-
         this.setCamera(Cameras.PRIMARY); //Secondary for front.
         this.setFrameSize(new Size(900, 900));
-
         enableExtension(Extensions.BEACON);         //Beacon detection
         enableExtension(Extensions.ROTATION);       //Automatic screen rotation correction
         enableExtension(Extensions.CAMERA_CONTROL); //Manual camera control
         beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
-
         beacon.setColorToleranceBlue(0.0);
         beacon.setColorToleranceRed(0.0);
         rotation.setIsUsingSecondaryCamera(false);
         rotation.disableAutoRotate();
         rotation.setActivityOrientationFixed(ScreenOrientation.PORTRAIT);
-
         cameraControl.setColorTemperature(CameraControlExtension.ColorTemperature.AUTO);
         cameraControl.setAutoExposureCompensation();
-
         for (int i = 0; i < 20; i++) { //telemetry additions for camera details
             //Log a few things
-
             telemetry.addData("Beacon Color", beacon.getAnalysis().getColorString());
             telemetry.addData("Beacon Center", beacon.getAnalysis().getLocationString());
             telemetry.addData("Beacon Confidence", beacon.getAnalysis().getConfidenceString());
