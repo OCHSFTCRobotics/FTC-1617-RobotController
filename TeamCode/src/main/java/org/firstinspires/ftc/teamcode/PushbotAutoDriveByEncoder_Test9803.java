@@ -93,9 +93,15 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
 
         int x = 1;
         int colorCount = 0;
-        encoderDrive(.5, 60, 60, 10);
-        encoderDrive(.5, -15.16, 15.16, 10);
-        encoderDrive(.5, 30, 30, 10);
+        encoderDrive(.7, 36, 36, 10);
+        encoderDrive(.9, -20.2, 20.2, 10);
+        encoderDrive(.9, 32, 32, 10);
+        encoderDrive(.9, 15, -15, 10);
+        encoderDrive(.9, 3, 3, 10);
+        encoderDrive(.9, 5, -5, 10);
+        encoderDrive(.9, 50, 50, 10);
+        encoderDrive(.9, 33.5, -33.5, 10);
+        encoderDrive(.9, 65, 65, 10);
         visionAct(visionFind());
         /*
         switch(x){
