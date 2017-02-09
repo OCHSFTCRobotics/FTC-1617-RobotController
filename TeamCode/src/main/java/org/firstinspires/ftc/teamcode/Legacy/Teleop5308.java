@@ -30,12 +30,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Legacy;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//import org.firstinspires.ftc.teamcode.HardwarePushbotTeam5308;
+import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
+
+//import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -52,11 +54,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: 9803 Teleop", group="9803")
-public class Teleop9803 extends OpMode{
+@TeleOp(name="Pushbot: 5308 Teleop", group="5308")
+public class Teleop5308 extends OpMode{
 
     /* Declare OpMode members. */
-    HardwarePushbotTeam9803 robot       = new HardwarePushbotTeam9803(); // use the class created to define a Pushbot's hardware
+    HardwarePushbotTeam5308 robot       = new HardwarePushbotTeam5308(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     public static final double BEACONLEFT_ZEROED  = 0.0 ;
     public static final double BEACONLEFT_PRESS  = 0.5 ;
@@ -99,37 +101,33 @@ public class Teleop9803 extends OpMode{
     public void loop() {
         double leftDrive;
         double rightDrive;
-        double pushDrive;
-        double ballDrive;
+        double rightFling;
+        double leftFling;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         leftDrive = gamepad1.left_stick_y;
         rightDrive = gamepad1.right_stick_y;
         robot.leftMotor.setPower(leftDrive);
         robot.rightMotor.setPower(rightDrive);
-        pushDrive = gamepad2.left_stick_y;
-        ballDrive = gamepad2.right_stick_y;
-        robot.pushDrive.setPower(pushDrive);
-        robot.ballDrive.setPower(ballDrive);
-        //leftFling = -gamepad2.left_stick_y;
+        leftFling = -gamepad2.left_stick_y;
         //rightDrive = -gamepad2.right_stick_y;
-        //robot.flingOne.setPower(leftFling);
-        //robot.flingTwo.setPower(leftFling);
+        robot.flingOne.setPower(leftFling);
+        robot.flingTwo.setPower(leftFling);
         //robot.flingTwo.setPower(leftFling);
         //robot.rightMotor.setPower(rightDrive);
 
         // Use gamepad left & right Bumpers to open and close the wings
         if (gamepad2.right_bumper){
-            //robot.wingRight.setPosition(0.55);
+            robot.wingRight.setPosition(0.55);
         }
         else if (!gamepad2.right_bumper){
-            //robot.wingRight.setPosition(1.0);
+            robot.wingRight.setPosition(1.0);
         }
         if (gamepad2.left_bumper){
-            //robot.wingLeft.setPosition(0.55);
+            robot.wingLeft.setPosition(0.55);
         }
         else if (!gamepad2.left_bumper){
-            //robot.wingLeft.setPosition(0.0);
+            robot.wingLeft.setPosition(0.0);
         }
 
         if (gamepad2.a){

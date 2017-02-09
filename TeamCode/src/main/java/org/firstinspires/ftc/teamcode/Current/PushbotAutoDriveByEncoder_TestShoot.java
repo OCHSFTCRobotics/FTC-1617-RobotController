@@ -30,14 +30,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
-
-import android.graphics.Color;
+package org.firstinspires.ftc.teamcode.Current;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
@@ -45,8 +44,8 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: 5308 TestBot Blue", group="5308")
-public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 5308 TestBot Shoot", group="5308")
+public class PushbotAutoDriveByEncoder_TestShoot extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam5308 robot   = new HardwarePushbotTeam5308();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
@@ -99,47 +98,7 @@ public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
 
         int x = 1;
         int colorCount = 0;
-        switch(x){
-            default:
-                x = 1;
-            case 1: //move forward 10 inches at DRIVE_SPEED.
-
-                encoderDrive(.2, 5, 5, 10);
-                x=2;
-            case 2:
-                encoderDrive(TURN_SPEED, -40, 40, 10);
-                encoderDrive(TURN_SPEED, 12, 12, 10);
-                encoderDrive(TURN_SPEED, 20, -20, 10);
-                x=3;
-            case 3:
-                encoderDrive(DRIVE_SPEED, 10, 10, 10);
-                x=4;
-            case 4:
-
-                encoderDrive(TURN_SPEED, 8, -3, 10);
-x=5;
-            case 5:
-                Color.RGBToHSV(robot.frontColor.red(), robot.frontColor.green(), robot.frontColor.blue(), hsvValues);
-                while (hsvValues[0] < 90){
-                    encoderDrive(.1, 1, 1, 1);
-                    telemetry.addData("Hue", hsvValues[0]);
-                    telemetry.update();
-                    if (robot.frontColor.alpha()>= 1){
-                        x=6;
-                    }
-
-                }
-            case 6:
-                encoderDrive(TURN_SPEED, 3, -3, 8);
-                encoderDrive(DRIVE_SPEED, 10, 10, 10);
-                boolean beacon = visionFind();
-                visionAct(beacon);
-                x=7;
-
-
-
-
-        }
+        encoderDrive(DRIVE_SPEED, 63, 63, 10);
     }
     /*
      *  Method to perfmorm a relative move, based on encoder counts.

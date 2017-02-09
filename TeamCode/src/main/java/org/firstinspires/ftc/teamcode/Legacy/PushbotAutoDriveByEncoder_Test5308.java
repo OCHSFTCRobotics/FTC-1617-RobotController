@@ -30,7 +30,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Legacy;
+
+import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,10 +45,10 @@ import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
 
-@Autonomous(name="Pushbot: 9803 TestBot", group="9803")
-public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 5308 TestBot Blue", group="5308")
+public class PushbotAutoDriveByEncoder_Test5308 extends LinearVisionOpMode {
     /* Declare OpMode members. */
-    HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803();   // Use a Pushbot's hardware
+    HardwarePushbotTeam5308 robot   = new HardwarePushbotTeam5308();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1440;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
@@ -77,6 +79,7 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
         telemetry.update();
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontColor.enableLed(true);
         idle();
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -89,47 +92,42 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        //cases
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
 
         int x = 1;
         int colorCount = 0;
-        encoderDrive(.7, 36, 36, 10);
-        encoderDrive(.9, -20.2, 20.2, 10);
-        encoderDrive(.9, 32, 32, 10);
-        encoderDrive(.9, 15, -15, 10);
-        encoderDrive(.9, 3, 3, 10);
-        encoderDrive(.9, 5, -5, 10);
-        encoderDrive(.9, 50, 50, 10);
-        encoderDrive(.9, 33.5, -33.5, 10);
-        encoderDrive(.9, 65, 65, 10);
-        visionAct(visionFind());
-        /*
         switch(x){
             default:
                 x = 1;
             case 1: //move forward 10 inches at DRIVE_SPEED.
-                encoderDrive(DRIVE_SPEED, 48, 48, 10);
+
+                encoderDrive(.2, 5, 5, 10);
                 x=2;
             case 2:
-                encoderDrive(TURN_SPEED, 5, 1, 10);
+                encoderDrive(TURN_SPEED, -40, 40, 10);
+                encoderDrive(TURN_SPEED, 12, 12, 10);
+                encoderDrive(TURN_SPEED, 20, -20, 10);
                 x=3;
-
-
             case 3:
-                encoderDrive(DRIVE_SPEED, 45, 45, 10);
+                encoderDrive(DRIVE_SPEED, 10, 10, 10);
                 x=4;
             case 4:
-                encoderDrive(TURN_SPEED, 1, 5, 10);
-                x=5;
+
+                encoderDrive(TURN_SPEED, 8, -3, 10);
+x=5;
             case 5:
-                telemetry.addData("Clear", robot.frontColor.alpha());
-                telemetry.update();
-                if (robot.frontColor.alpha()>= 1){
-                    x=6;
-                }
-                else if (robot.frontColor.alpha()<1){
-                    robot.leftMotor.setPower(0.1);
-                    robot.rightMotor.setPower(0.1);
+                Color.RGBToHSV(robot.frontColor.red(), robot.frontColor.green(), robot.frontColor.blue(), hsvValues);
+                while (hsvValues[0] < 90){
+                    encoderDrive(.1, 1, 1, 1);
+                    telemetry.addData("Hue", hsvValues[0]);
+                    telemetry.update();
+                    if (robot.frontColor.alpha()>= 1){
+                        x=6;
+                    }
+
                 }
             case 6:
                 encoderDrive(TURN_SPEED, 3, -3, 8);
@@ -138,10 +136,10 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
                 visionAct(beacon);
                 x=7;
 
-                    }
 
-                */
 
+
+        }
     }
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
@@ -172,8 +170,8 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.leftMotor.setPower(speed);
-            robot.rightMotor.setPower((speed));
+            robot.leftMotor.setPower(Math.abs(speed));
+            robot.rightMotor.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
@@ -185,6 +183,7 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
                 telemetry.addData("Path2",  "Running at %7d : %7d",
                                             robot.leftMotor.getCurrentPosition(),
                                             robot.rightMotor.getCurrentPosition());
+                telemetry.addData("Clear", robot.frontColor.alpha());
                 telemetry.update();
             }
 
@@ -202,29 +201,22 @@ public class PushbotAutoDriveByEncoder_Test9803 extends LinearVisionOpMode {
     int blueCount = 0;
     public boolean visionFind() throws InterruptedException{
         boolean blueLeft;
-
         waitForVisionStart();
-
         this.setCamera(Cameras.PRIMARY); //Secondary for front.
         this.setFrameSize(new Size(900, 900));
-
         enableExtension(Extensions.BEACON);         //Beacon detection
         enableExtension(Extensions.ROTATION);       //Automatic screen rotation correction
         enableExtension(Extensions.CAMERA_CONTROL); //Manual camera control
         beacon.setAnalysisMethod(Beacon.AnalysisMethod.FAST);
-
         beacon.setColorToleranceBlue(0.0);
         beacon.setColorToleranceRed(0.0);
         rotation.setIsUsingSecondaryCamera(false);
         rotation.disableAutoRotate();
         rotation.setActivityOrientationFixed(ScreenOrientation.PORTRAIT);
-
         cameraControl.setColorTemperature(CameraControlExtension.ColorTemperature.AUTO);
         cameraControl.setAutoExposureCompensation();
-
         for (int i = 0; i < 20; i++) { //telemetry additions for camera details
             //Log a few things
-
             telemetry.addData("Beacon Color", beacon.getAnalysis().getColorString());
             telemetry.addData("Beacon Center", beacon.getAnalysis().getLocationString());
             telemetry.addData("Beacon Confidence", beacon.getAnalysis().getConfidenceString());

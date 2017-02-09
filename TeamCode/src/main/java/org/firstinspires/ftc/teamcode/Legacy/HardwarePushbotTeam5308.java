@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Legacy;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -24,19 +23,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwarePushbotConcept
+public class HardwarePushbotTeam5308
 {
     /* Public OpMode members. */
-    public ColorSensor testColor = null;
-    public OpticalDistanceSensor testDistance = null;
-    public UltrasonicSensor testUltrasonic = null;
-    /*
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
     public DcMotor  flingOne    = null;
     public DcMotor  flingTwo    = null;
     public Servo    rightBeacon = null;
     public Servo    leftBeacon  = null;
+    public ColorSensor frontColor = null;
+    public Servo    wingLeft    = null;
+    public Servo    wingRight   = null;
+    public Servo    armLeft    = null;
+    public Servo    armRight   = null;
 
 
     public static final double MID_SERVO       =  0.5 ;
@@ -46,14 +46,13 @@ public class HardwarePushbotConcept
     public static final double BEACONLEFT_PRESS  = 0.5 ;
     public static final double BEACONRIGHT_ZEROED  = 1.0 ;
     public static final double BEACONRIGHT_PRESS  = 0.5 ;
-    */
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor  */
-    public HardwarePushbotConcept(){
+    public HardwarePushbotTeam5308(){
 
     }
 
@@ -62,20 +61,22 @@ public class HardwarePushbotConcept
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-        testColor = hwMap.colorSensor.get("frontColor");
-        //testDistance = hwMap.opticalDistanceSensor.get("testDistance");
-        //testUltrasonic = hwMap.ultrasonicSensor.get("testUltra");
-        /*
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("leftDrive");
         rightMotor  = hwMap.dcMotor.get("rightDrive");
         flingOne    = hwMap.dcMotor.get("flingOne");
         flingTwo    = hwMap.dcMotor.get("flingTwo");
-        leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        leftMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
 
         leftBeacon  = hwMap.servo.get("beaconLeft");
         rightBeacon = hwMap.servo.get("beaconRight");
+        wingLeft  = hwMap.servo.get("wingLeft");
+        wingRight = hwMap.servo.get("wingRight");
+        armLeft  = hwMap.servo.get("armLeft");
+        armRight = hwMap.servo.get("armRight");
+
+        frontColor = hwMap.colorSensor.get("frontColor");
 
         // Set all motors to zero power
         leftMotor.setPower(0);
@@ -95,11 +96,8 @@ public class HardwarePushbotConcept
 
         leftBeacon.setPosition(BEACONLEFT_ZEROED);
         rightBeacon.setPosition(BEACONRIGHT_ZEROED);
-        */
-        testColor.enableLed(true);
-        //testDistance.enableLed(true);
 
-
+        frontColor.enableLed(false);
     }
 
     /***
