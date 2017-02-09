@@ -35,6 +35,8 @@ package org.firstinspires.ftc.teamcode.Current;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+
 //import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 
 /**
@@ -92,49 +94,42 @@ public class Teleop9803 extends OpMode{
      */
     @Override
     public void loop() {
-        double leftDrive;
-        double rightDrive;
-        double pushDrive;
-        double ballDrive;
+        double leftDriveStick;
+        double rightDriveStick;
+        double leftTrig;
+        double rightTrig;
 
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        leftDrive = gamepad1.left_stick_y;
-        rightDrive = gamepad1.right_stick_y;
-        robot.backLeftMotor.setPower(leftDrive);
-        robot.backRightMotor.setPower(rightDrive);
-        robot.frontLeftMotor.setPower(leftDrive);
-        robot.frontRightMotor.setPower(rightDrive);
+        leftDriveStick = gamepad1.left_stick_y;
+        rightDriveStick = gamepad1.right_stick_y;
+        leftTrig = gamepad1.left_trigger;
+        rightTrig= gamepad1.right_trigger;
 
-        // Use gamepad left & right Bumpers to open and close the wings
-        if (gamepad2.right_bumper){
-            //robot.wingRight.setPosition(0.55);
+        //DRIVE ORDER: Front Left, Front Right, Back Left, Back Right
+        if (Math.abs(leftDriveStick)>.05||Math.abs(rightDriveStick)>0.5) {
+            drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
         }
-        else if (!gamepad2.right_bumper){
-            //robot.wingRight.setPosition(1.0);
+        if (gamepad1.left_trigger>0.1){
+            drive(robot, -leftTrig, leftTrig, leftTrig, -leftTrig);
         }
-        if (gamepad2.left_bumper){
-            //robot.wingLeft.setPosition(0.55);
+        if (gamepad1.right_trigger>0.1){
+            drive(robot, rightTrig, -rightTrig, -rightTrig, rightTrig);
         }
-        else if (!gamepad2.left_bumper){
-            //robot.wingLeft.setPosition(0.0);
+        if (leftTrig==0 && rightTrig==0 && leftDriveStick==0 && rightDriveStick==0){
+            drive(robot, 0, 0, 0, 0);
         }
-
-        if (gamepad2.a){
-
-        }
-
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-
         if (gamepad1.y) {
-            
+            drive(robot, .65, 0, 0, .65);
         }
-        else if (gamepad1.a){
+        if (gamepad1.x) {
+            drive(robot, 0, .65, .65, 0);
         }
-        if (gamepad1.left_trigger>.5){
-
+        if (gamepad1.a) {
+            drive(robot, 0, -.65, -.65, 0);
         }
-
-
+        if (gamepad1.b) {
+            drive(robot, -.65, 0, 0, -.65);
+        }
 
 
         //WINGED_POS = robot.wing.getPosition();
@@ -142,8 +137,8 @@ public class Teleop9803 extends OpMode{
 
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("left",  "%.2f", leftDrive);
-        telemetry.addData("right", "%.2f", rightDrive);
+        telemetry.addData("left",  "%.2f", leftDriveStick);
+        telemetry.addData("right", "%.2f", rightDriveStick);
         telemetry.update();
 
 
@@ -155,6 +150,13 @@ public class Teleop9803 extends OpMode{
      */
     @Override
     public void stop() {
+    }
+    public static void drive(HardwarePushbotTeam9803 robot,
+                             double frontLeft, double frontRight, double backLeft, double backRight){
+        robot.backLeftMotor.setPower(backLeft);
+        robot.backRightMotor.setPower(backRight);
+        robot.frontLeftMotor.setPower(frontLeft);
+        robot.frontRightMotor.setPower(frontRight);
     }
 
 }
