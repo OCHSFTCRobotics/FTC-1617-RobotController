@@ -99,6 +99,7 @@ public class Teleop9803 extends OpMode{
         double leftTrig;
         double rightTrig;
 
+
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
         leftDriveStick = gamepad1.left_stick_y;
         rightDriveStick = gamepad1.right_stick_y;
@@ -106,6 +107,11 @@ public class Teleop9803 extends OpMode{
         rightTrig= gamepad1.right_trigger;
 
         //DRIVE ORDER: Front Left, Front Right, Back Left, Back Right
+        /*
+        switch (SWITCHDRIVE){
+            case TESTSTATE;
+        }
+        */
         if (Math.abs(leftDriveStick)>.05||Math.abs(rightDriveStick)>0.5) {
             drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
         }
@@ -157,6 +163,9 @@ public class Teleop9803 extends OpMode{
         robot.backRightMotor.setPower(backRight);
         robot.frontLeftMotor.setPower(frontLeft);
         robot.frontRightMotor.setPower(frontRight);
+    }
+    public enum SWITCHDRIVE{
+        TESTSTATE
     }
 
 }
