@@ -109,29 +109,29 @@ public class Teleop9803 extends OpMode{
         if (Math.abs(leftDriveStick)>.05||Math.abs(rightDriveStick)>0.5) {
             drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
         }
-        if (gamepad1.left_trigger>0.1){
+        if (gamepad1.right_trigger>0.1){
             drive(robot, -leftTrig, leftTrig, leftTrig, -leftTrig);
         }
-        if (gamepad1.right_trigger>0.1){
+        if (gamepad1.left_trigger>0.1){
             drive(robot, rightTrig, -rightTrig, -rightTrig, rightTrig);
         }
-        if (leftTrig==0 && rightTrig==0 && leftDriveStick==0 && rightDriveStick==0){
-            drive(robot, 0, 0, 0, 0);
-        }
+
+        /*
+
         if (gamepad1.y) {
-            drive(robot, .65, 0, 0, .65);
+            drive(robot, .99, 0, 0, .99);
         }
         if (gamepad1.x) {
-            drive(robot, 0, .65, .65, 0);
+            drive(robot, 0, .99, .99, 0);
         }
         if (gamepad1.a) {
-            drive(robot, 0, -.65, -.65, 0);
+            drive(robot, 0, -.99, -.99, 0);
         }
         if (gamepad1.b) {
-            drive(robot, -.65, 0, 0, -.65);
+            drive(robot, -.99, 0, 0, -.99);
         }
 
-
+        */
         //WINGED_POS = robot.wing.getPosition();
 
 
