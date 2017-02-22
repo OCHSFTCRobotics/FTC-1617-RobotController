@@ -112,9 +112,8 @@ public class Teleop9803 extends OpMode{
             case TESTSTATE;
         }
         */
-        if (Math.abs(leftDriveStick)>.05||Math.abs(rightDriveStick)>0.5) {
-            drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
-        }
+        drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
+
         if (gamepad1.right_trigger>0.1){
             drive(robot, -leftTrig, leftTrig, leftTrig, -leftTrig);
         }
@@ -158,7 +157,8 @@ public class Teleop9803 extends OpMode{
     public void stop() {
     }
     public static void drive(HardwarePushbotTeam9803 robot,
-                             double frontLeft, double frontRight, double backLeft, double backRight){
+                             double frontLeft, double frontRight,
+                             double backLeft, double backRight){
         robot.backLeftMotor.setPower(backLeft);
         robot.backRightMotor.setPower(backRight);
         robot.frontLeftMotor.setPower(frontLeft);

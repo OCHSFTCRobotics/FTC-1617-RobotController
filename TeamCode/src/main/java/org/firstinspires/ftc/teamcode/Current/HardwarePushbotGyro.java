@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.Current;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -23,27 +23,34 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwarePushbotTeam9803
+public class HardwarePushbotGyro
 {
     /* Public OpMode members. */
-    public DcMotor  frontLeftMotor   = null;
-    public DcMotor  frontRightMotor  = null;
-    public DcMotor  backLeftMotor   = null;
-    public DcMotor  backRightMotor  = null;
-    public DcMotor  ballDrive    = null;
-    public DcMotor  pushDrive    = null;
+    public GyroSensor testGyro = null;
+    /*
+    public DcMotor  leftMotor   = null;
+    public DcMotor  rightMotor  = null;
+    public DcMotor  flingOne    = null;
+    public DcMotor  flingTwo    = null;
     public Servo    rightBeacon = null;
     public Servo    leftBeacon  = null;
-    public ColorSensor colorRight = null;
-    public ColorSensor colorLeft = null;
-    public GyroSensor frontGyro = null;
+
+
+    public static final double MID_SERVO       =  0.5 ;
+    public static final double ARM_UP_POWER    =  0.45 ;
+    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double BEACONLEFT_ZEROED  = 0.0 ;
+    public static final double BEACONLEFT_PRESS  = 0.5 ;
+    public static final double BEACONRIGHT_ZEROED  = 1.0 ;
+    public static final double BEACONRIGHT_PRESS  = 0.5 ;
+    */
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor  */
-    public HardwarePushbotTeam9803(){
+    public HardwarePushbotGyro(){
 
     }
 
@@ -52,51 +59,43 @@ public class HardwarePushbotTeam9803
         // Save reference to Hardware map
         hwMap = ahwMap;
 
+        testGyro = hwMap.gyroSensor.get("frontGyro");
+        //testDistance = hwMap.opticalDistanceSensor.get("testDistance");
+        //testUltrasonic = hwMap.ultrasonicSensor.get("testUltra");
+        /*
         // Define and Initialize Motors
-        frontLeftMotor   = hwMap.dcMotor.get("frontLeftDrive");
-        frontRightMotor  = hwMap.dcMotor.get("frontRightDrive");
-        backLeftMotor   = hwMap.dcMotor.get("backLeftDrive");
-        backRightMotor  = hwMap.dcMotor.get("backRightDrive");
-        frontGyro = hwMap.gyroSensor.get("gyroFront");
-        colorRight = hwMap.colorSensor.get("colorRight");
-        colorLeft = hwMap.colorSensor.get("colorLeft");
+        leftMotor   = hwMap.dcMotor.get("leftDrive");
+        rightMotor  = hwMap.dcMotor.get("rightDrive");
+        flingOne    = hwMap.dcMotor.get("flingOne");
+        flingTwo    = hwMap.dcMotor.get("flingTwo");
+        leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
-
-        //set direction
-        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        backLeftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        backRightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-
-        //leftBeacon  = hwMap.servo.get("leftBeacon");
-        //rightBeacon = hwMap.servo.get("rightBeacon");
-
-
-        //frontColor = hwMap.colorSensor.get("frontColor");
+        leftBeacon  = hwMap.servo.get("beaconLeft");
+        rightBeacon = hwMap.servo.get("beaconRight");
 
         // Set all motors to zero power
-        //front
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        frontLeftMotor.setMaxSpeed(1800);
-        frontRightMotor.setMaxSpeed(1800);
-        //back
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        backLeftMotor.setMaxSpeed(1800);
-        backRightMotor.setMaxSpeed(1800);
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+        flingOne.setPower(0);
+        flingTwo.setPower(0.0);
+        leftMotor.setMaxSpeed(1800);
+        rightMotor.setMaxSpeed(1800);
 
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flingOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flingTwo.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        leftBeacon.setPosition(BEACONLEFT_ZEROED);
+        rightBeacon.setPosition(BEACONRIGHT_ZEROED);
+        */
+        //testDistance.enableLed(true);
 
 
-        colorLeft.enableLed(true);
-        colorRight.enableLed(true);
     }
 
     /***
