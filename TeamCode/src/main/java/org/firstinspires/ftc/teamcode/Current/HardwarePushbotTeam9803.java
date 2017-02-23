@@ -37,6 +37,7 @@ public class HardwarePushbotTeam9803
     public ColorSensor colorRight = null;
     public ColorSensor colorLeft = null;
     public GyroSensor frontGyro = null;
+    public Servo beacon = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -60,6 +61,11 @@ public class HardwarePushbotTeam9803
         frontGyro = hwMap.gyroSensor.get("gyroFront");
         colorRight = hwMap.colorSensor.get("colorRight");
         colorLeft = hwMap.colorSensor.get("colorLeft");
+        beacon = hwMap.servo.get("beaconPush");
+
+
+        beacon.setPosition(.5);
+
 
 
         //set direction

@@ -92,12 +92,14 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d : %7d",
+        telemetry.addData("Front",  "Starting front at %7d : %7d",
                 robot.frontLeftMotor.getCurrentPosition(),
-                robot.frontRightMotor.getCurrentPosition(),
+                robot.frontRightMotor.getCurrentPosition());
+        telemetry.addData("Back",  "Starting back at %7d : %7d",
                 robot.backLeftMotor.getCurrentPosition(),
-                robot.backRightMotor.getCurrentPosition()
-        );
+                robot.backRightMotor.getCurrentPosition());
+
+
         telemetry.update();
         gyro.calibrate();
         // Wait for the game to start (driver presses PLAY)
@@ -136,7 +138,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             newFrontRightTarget = (robot.frontRightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH));
             robot.frontLeftMotor.setTargetPosition(newFrontLeftTarget);
             robot.frontRightMotor.setTargetPosition(newFrontRightTarget);
-            
+
             newBackLeftTarget = (robot.backLeftMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH));
             newBackRightTarget = (robot.backRightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH));
             robot.backLeftMotor.setTargetPosition(newBackLeftTarget);
@@ -162,10 +164,14 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
                    (robot.backLeftMotor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newBackLeftTarget,  newBackLeftTarget);
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
                 telemetry.addData("Path2",  "Running at %7d : %7d",
                                             robot.frontLeftMotor.getCurrentPosition(),
                                             robot.frontRightMotor.getCurrentPosition());
+                telemetry.addData("Path3",  "Running to %7d :%7d", newBackLeftTarget,  newBackRightTarget);
+                telemetry.addData("Path4",  "Running at %7d : %7d",
+                        robot.backLeftMotor.getCurrentPosition(),
+                        robot.backRightMotor.getCurrentPosition());
                 telemetry.addData("Clear Left", robot.colorLeft.alpha());
                 telemetry.addData("Clear Right", robot.colorRight.alpha());
                 telemetry.update();

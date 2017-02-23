@@ -112,13 +112,27 @@ public class Teleop9803 extends OpMode{
             case TESTSTATE;
         }
         */
-        drive(robot, leftDriveStick, rightDriveStick, leftDriveStick, rightDriveStick);
+        if (rightTrig<=.1&&leftTrig<=.1){
+            drive(robot, rightDriveStick, leftDriveStick, rightDriveStick, leftDriveStick);
+        }
+
 
         if (gamepad1.right_trigger>0.1){
-            drive(robot, -leftTrig, leftTrig, leftTrig, -leftTrig);
+            drive(robot, -rightTrig, rightTrig, rightTrig, -rightTrig);
+
         }
         if (gamepad1.left_trigger>0.1){
-            drive(robot, rightTrig, -rightTrig, -rightTrig, rightTrig);
+            drive(robot, leftTrig, -leftTrig, -leftTrig, leftTrig);
+        }
+
+        if (gamepad2.right_bumper){
+            robot.beacon.setPosition(0.0);
+        }
+        if (gamepad2.left_bumper){
+            robot.beacon.setPosition(1.0);
+        }
+        if (gamepad2.start){
+            robot.beacon.setPosition(.5);
         }
 
         /*
