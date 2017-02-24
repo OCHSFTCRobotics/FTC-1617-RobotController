@@ -45,6 +45,7 @@ import org.lasarobotics.vision.opmode.LinearVisionOpMode;
 import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
+import org.opencv.ml.DTrees;
 
 @Autonomous(name="Pushbot: 9803 Blue", group="9803")
 public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
@@ -53,7 +54,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1440;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.9375 ;     // For figuring circumference
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.85;
@@ -112,16 +113,14 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
 
         int x = 1;
         int colorCount = 0;
-        encoderDrive(DRIVE_SPEED, 63, 63, 10);
+
+        basicDrive(DRIVE_SPEED, 10, 10, 15); //Simple forward/backwards
+        sideDrive(DRIVE_SPEED, 10, 15); //Simple sideways, factored; defaults positives to right, use negative for left
+        encoderDrive(DRIVE_SPEED, 10, 10, 10, 10, 15); //Simple example of least abstract encoder drive.
     }
+
+    //Todo:Remove deprecated encoderDrive from original tank design.
     /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -205,6 +204,110 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
+    */
+    public void basicDrive (double speed,
+                            double leftInches, double rightInches,
+                            double timeoutS){
+        encoderDrive(speed, leftInches, rightInches, leftInches, rightInches, timeoutS);
+    }
+    public void sideDrive (double speed,
+                            double factor,
+                            double timeoutS){
+        encoderDrive(speed, factor, -factor, -factor, factor, timeoutS);
+    }
+    public void angledDrive (double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS, int angle){
+
+    }
+    public void angleCorrection (int curAngle, int reqAngle){
+
+
+    }
+    public void encoderDrive(double speed,
+                             double leftFrontInches, double rightFrontInches,
+                             double leftBackInches, double rightBackInches,
+                             double timeoutS) {
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = (robot.frontLeftMotor.getCurrentPosition() + (int)(leftFrontInches * COUNTS_PER_INCH));
+            newFrontRightTarget = (robot.frontRightMotor.getCurrentPosition() + (int)(rightFrontInches * COUNTS_PER_INCH));
+            robot.frontLeftMotor.setTargetPosition(newFrontLeftTarget);
+            robot.frontRightMotor.setTargetPosition(newFrontRightTarget);
+
+            newBackLeftTarget = (robot.backLeftMotor.getCurrentPosition() + (int)(leftBackInches * COUNTS_PER_INCH));
+            newBackRightTarget = (robot.backRightMotor.getCurrentPosition() + (int)(rightBackInches * COUNTS_PER_INCH));
+            robot.backLeftMotor.setTargetPosition(newBackLeftTarget);
+            robot.backRightMotor.setTargetPosition(newBackRightTarget);
+
+
+            // Turn On RUN_TO_POSITION
+            robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.frontRightMotor.setPower(Math.abs(speed));
+            robot.frontLeftMotor.setPower(Math.abs(speed));
+            robot.backRightMotor.setPower(Math.abs(speed));
+            robot.backLeftMotor.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.backLeftMotor.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", newFrontLeftTarget,  newFrontRightTarget);
+                telemetry.addData("Path2",  "Running at %7d : %7d",
+                        robot.frontLeftMotor.getCurrentPosition(),
+                        robot.frontRightMotor.getCurrentPosition());
+                telemetry.addData("Path3",  "Running to %7d :%7d", newBackLeftTarget,  newBackRightTarget);
+                telemetry.addData("Path4",  "Running at %7d : %7d",
+                        robot.backLeftMotor.getCurrentPosition(),
+                        robot.backRightMotor.getCurrentPosition());
+                telemetry.addData("Clear Left", robot.colorLeft.alpha());
+                telemetry.addData("Clear Right", robot.colorRight.alpha());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.frontLeftMotor.setPower(0);
+            robot.frontRightMotor.setPower(0);
+            robot.backLeftMotor.setPower(0);
+            robot.backRightMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //  sleep(250);   // optional pause after each move
+        }
+        else {
+            // Stop all motion;
+            robot.frontLeftMotor.setPower(0);
+            robot.frontRightMotor.setPower(0);
+            robot.backLeftMotor.setPower(0);
+            robot.backRightMotor.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //  sleep(250);   // optional pause after each move
+        }
+    }
     int frameCount = 0;
     int blueCount = 0;
     public boolean visionFind() throws InterruptedException{
@@ -248,11 +351,12 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     public void visionAct (boolean blueLeft){
         if (blueLeft == true){
             robot.leftBeacon.setPosition(BEACONLEFT_PRESS);
-            encoderDrive(1.0,5,5,100.0);
+            //encoderDrive(1.0,5,5,100.0);
         }
         else if (blueLeft == false){
             robot.rightBeacon.setPosition(BEACONRIGHT_PRESS);
-            encoderDrive(1.0, 5, 5, 100.0);
+            //encoderDrive(1.0, 5, 5, 100.0);
         }
     }
 }
+
