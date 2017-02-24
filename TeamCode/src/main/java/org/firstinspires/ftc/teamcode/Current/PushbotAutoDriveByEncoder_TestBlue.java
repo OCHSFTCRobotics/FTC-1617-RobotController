@@ -221,6 +221,21 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
 
     }
     public void angleCorrection (int curAngle, int reqAngle){
+        int curAngleTemp = curAngle;
+        int reqAngleTemp = reqAngle;
+        if (curAngleTemp > 180){
+            curAngleTemp = 360-curAngleTemp;
+        }
+        if (reqAngleTemp > 180){
+            reqAngleTemp = 360 - curAngleTemp;
+        }
+        if (curAngle > reqAngle + 3 && curAngle < reqAngle - 3){
+
+        }
+        if (curAngle < reqAngle + 3 && curAngle > reqAngle - 3){
+
+        }
+
 
 
     }
@@ -357,6 +372,12 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             robot.rightBeacon.setPosition(BEACONRIGHT_PRESS);
             //encoderDrive(1.0, 5, 5, 100.0);
         }
+    }
+    public static int correctNum(int num){
+        if (num <= 360 && num >= 355){
+
+        }
+        return num;
     }
 }
 
