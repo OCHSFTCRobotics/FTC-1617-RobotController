@@ -59,10 +59,9 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
                                                       (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.85;
     static final double     TURN_SPEED              = 0.3;
-    public static final double BEACONLEFT_ZEROED    = 0.0;
-    public static final double BEACONLEFT_PRESS     = 0.5;
-    public static final double BEACONRIGHT_ZEROED   = 1.0;
-    public static final double BEACONRIGHT_PRESS    = 0.5;
+    public static final double BEACON_LEFTPRESS     = 0.0;
+    public static final double BEACON_ZEROED        = 0.5;
+    public static final double BEACON_RIGHTPRESS    = 1.0;
     public void idle(){
     }
     public void loop(){
@@ -83,7 +82,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         telemetry.update();
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.colorLeft.enableLed(true);
         robot.colorRight.enableLed(true);
@@ -102,14 +101,9 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
 
 
         telemetry.update();
-        gyro.calibrate();
+        gyro.calibrate(); //initializes gyro, may take time
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        float hsvValues[] = {0F, 0F, 0F};
-
-        // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
 
         int x = 1;
         int colorCount = 0;
@@ -117,6 +111,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         basicDrive(DRIVE_SPEED, 10, 10, 15); //Simple forward/backwards
         sideDrive(DRIVE_SPEED, 10, 15); //Simple sideways, factored; defaults positives to right, use negative for left
         encoderDrive(DRIVE_SPEED, 10, 10, 10, 10, 15); //Simple example of least abstract encoder drive.
+        angleCorrection(gyro.getHeading(), 0);
     }
 
     //Todo:Remove deprecated encoderDrive from original tank design.
@@ -223,17 +218,22 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     public void angleCorrection (int curAngle, int reqAngle){
         int curAngleTemp = curAngle;
         int reqAngleTemp = reqAngle;
+
         if (curAngleTemp > 180){
-            curAngleTemp = 360-curAngleTemp;
+            curAngleTemp = curAngleTemp - 360;
         }
         if (reqAngleTemp > 180){
-            reqAngleTemp = 360 - curAngleTemp;
+            reqAngleTemp = reqAngleTemp - 360;
         }
-        if (curAngle > reqAngle + 3 && curAngle < reqAngle - 3){
-
+        if (curAngleTemp > reqAngleTemp + 3){
+            basicDrive(DRIVE_SPEED, -.5, .5, 10);
         }
-        if (curAngle < reqAngle + 3 && curAngle > reqAngle - 3){
-
+        else if (curAngleTemp < reqAngleTemp - 3){
+            basicDrive(DRIVE_SPEED, .5, -.5, 10);
+        }
+        else{
+            telemetry.addLine("Info: No significant error detected. Either on track or messed up.");
+            telemetry.update();
         }
 
 
@@ -327,6 +327,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     int blueCount = 0;
     public boolean visionFind() throws InterruptedException{
         boolean blueLeft;
+
         waitForVisionStart();
         this.setCamera(Cameras.PRIMARY); //Secondary for front.
         this.setFrameSize(new Size(900, 900));
@@ -351,7 +352,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             telemetry.addData("Frame Rate", fps.getFPSString() + " FPS");
             telemetry.addData("Frame Size", "Width: " + width + " Height: " + height);
             telemetry.addData("Frame Counter", frameCount);
-            if (beacon.getAnalysis().getColorString().startsWith("blue")) {
+            if (beacon.getAnalysis().getColorString().startsWith("blue")) { //blue:red
                 blueCount += 1;
             }
 
@@ -363,13 +364,16 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             return false;
         }
     }
+    //Todo: Come back and test for different movements.
     public void visionAct (boolean blueLeft){
         if (blueLeft == true){
-            robot.leftBeacon.setPosition(BEACONLEFT_PRESS);
+            robot.leftBeacon.setPosition(BEACON_RIGHTPRESS);
+            basicDrive(1.0, 5, 5, 10);
             //encoderDrive(1.0,5,5,100.0);
         }
         else if (blueLeft == false){
-            robot.rightBeacon.setPosition(BEACONRIGHT_PRESS);
+            robot.rightBeacon.setPosition(BEACON_RIGHTPRESS);
+            basicDrive(1.0, -5, -5, 10);
             //encoderDrive(1.0, 5, 5, 100.0);
         }
     }
