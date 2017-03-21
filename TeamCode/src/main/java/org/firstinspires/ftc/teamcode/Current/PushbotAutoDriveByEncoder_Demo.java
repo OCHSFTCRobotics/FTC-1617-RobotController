@@ -38,17 +38,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
 import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
-import org.opencv.ml.DTrees;
 
-@Autonomous(name="Pushbot: 9803 Blue", group="9803")
-public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 9803 Demo", group="9803")
+public class PushbotAutoDriveByEncoder_Demo extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803(  );   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
@@ -56,7 +54,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * Math.PI);
+            (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 1.0;
     static final double     TURN_SPEED              = 0.3;
     public static final double BEACON_LEFTPRESS     = 0.0;
@@ -108,9 +106,22 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         int x = 1;
         int colorCount = 0;
 
-        basicDrive(DRIVE_SPEED, 18, 18, 15); //Simple forward/backwards
-        sideDrive(DRIVE_SPEED, -60, 18); //Simple sideways, factored; defaults positives to right, use negative for left
-        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive
+        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive.
+
+        basicDrive(DRIVE_SPEED, 17.5, 17.5, 15); //Simple forward/backwards
+        basicDrive(DRIVE_SPEED, -20, 20, 15);
+        visionAct(true);
+        visionAct(false);
+        visionAct(true);
+        visionAct(false);
+        robot.lift.setPower(.8);
+        robot.catapult.setPower(1.0);
+        sleep(2000);
+        robot.lift.setPower(0);
+        robot.catapult.setPower(0);
+        basicDrive(DRIVE_SPEED, 20, -20, 15);
+        //sideDrive(DRIVE_SPEED, -4, 15);
+        //basicDrive(DRIVE_SPEED, 20, 20, 15);
     }
 
     //Todo:Remove deprecated encoderDrive from original tank design.
@@ -205,8 +216,8 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         encoderDrive(speed, leftInches, rightInches, leftInches, rightInches, timeoutS);
     }
     public void sideDrive (double speed,
-                            double factor,
-                            double timeoutS){
+                           double factor,
+                           double timeoutS){
         encoderDrive(speed, factor, -factor, -factor, factor, timeoutS);
     }
     public void angledDrive (double speed,
@@ -302,7 +313,7 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
             robot.backRightMotor.setPower(0);
 
             // Turn off RUN_TO_POSITION
-           // robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            // robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -370,12 +381,12 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
     //Todo: Come back and test for different movements.
     public void visionAct (boolean blueLeft){
         if (blueLeft == true){
-            robot.leftBeacon.setPosition(BEACON_RIGHTPRESS);
+            robot.beacon.setPosition(BEACON_RIGHTPRESS);
             basicDrive(1.0, 5, 5, 10);
             //encoderDrive(1.0,5,5,100.0);
         }
         else if (blueLeft == false){
-            robot.rightBeacon.setPosition(BEACON_RIGHTPRESS);
+            robot.beacon.setPosition(BEACON_RIGHTPRESS);
             basicDrive(1.0, -5, -5, 10);
             //encoderDrive(1.0, 5, 5, 100.0);
         }

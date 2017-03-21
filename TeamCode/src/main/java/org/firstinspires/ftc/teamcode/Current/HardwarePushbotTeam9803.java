@@ -38,7 +38,8 @@ public class HardwarePushbotTeam9803
     public ColorSensor colorLeft = null;
     public GyroSensor frontGyro = null;
     public Servo beacon = null;
-
+    public DcMotor catapult = null;
+    public DcMotor lift     = null;
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -62,6 +63,9 @@ public class HardwarePushbotTeam9803
         colorRight = hwMap.colorSensor.get("colorRight");
         colorLeft = hwMap.colorSensor.get("colorLeft");
         beacon = hwMap.servo.get("beaconPush");
+        lift = hwMap.dcMotor.get("lift");
+        catapult = hwMap.dcMotor.get("catapult");
+
 
 
         beacon.setPosition(.5);

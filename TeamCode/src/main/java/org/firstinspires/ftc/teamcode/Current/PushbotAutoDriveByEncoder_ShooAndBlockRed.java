@@ -38,17 +38,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
 import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
-import org.opencv.ml.DTrees;
 
-@Autonomous(name="Pushbot: 9803 Blue", group="9803")
-public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 9803 Red Block", group="9803")
+public class PushbotAutoDriveByEncoder_ShooAndBlockRed extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803(  );   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
@@ -108,9 +106,13 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
         int x = 1;
         int colorCount = 0;
 
-        basicDrive(DRIVE_SPEED, 18, 18, 15); //Simple forward/backwards
-        sideDrive(DRIVE_SPEED, -60, 18); //Simple sideways, factored; defaults positives to right, use negative for left
-        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive
+        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive.
+
+        basicDrive(DRIVE_SPEED, 17.5, 17.5, 15); //Simple forward/backwards
+        sideDrive(DRIVE_SPEED, 68, 18); //Simple sideways, factored; defaults positives to right, use negative for left
+        basicDrive(DRIVE_SPEED, 8, 8, 15);
+        //sideDrive(DRIVE_SPEED, -4, 15);
+        //basicDrive(DRIVE_SPEED, 20, 20, 15);
     }
 
     //Todo:Remove deprecated encoderDrive from original tank design.

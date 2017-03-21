@@ -118,11 +118,11 @@ public class Teleop9803 extends OpMode{
 
 
         if (gamepad1.right_trigger>0.1){
-            drive(robot, -rightTrig, rightTrig, rightTrig, -rightTrig);
+            drive(robot, rightTrig, -rightTrig, -rightTrig, rightTrig);
 
         }
         if (gamepad1.left_trigger>0.1){
-            drive(robot, leftTrig, -leftTrig, -leftTrig, leftTrig);
+            drive(robot, -leftTrig, leftTrig, leftTrig, -leftTrig);
         }
 
         if (gamepad2.right_bumper){
@@ -158,6 +158,7 @@ public class Teleop9803 extends OpMode{
         // Send telemetry message to signify robot running;
         telemetry.addData("left",  "%.2f", leftDriveStick);
         telemetry.addData("right", "%.2f", rightDriveStick);
+        telemetry.addData("gyro", "%d", robot.frontGyro.getHeading());
         telemetry.update();
 
 

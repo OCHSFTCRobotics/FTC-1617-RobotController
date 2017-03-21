@@ -38,17 +38,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Legacy.HardwarePushbotTeam5308;
 import org.lasarobotics.vision.android.Cameras;
 import org.lasarobotics.vision.ftc.resq.Beacon;
 import org.lasarobotics.vision.opmode.LinearVisionOpMode;
 import org.lasarobotics.vision.opmode.extensions.CameraControlExtension;
 import org.lasarobotics.vision.util.ScreenOrientation;
 import org.opencv.core.Size;
-import org.opencv.ml.DTrees;
 
-@Autonomous(name="Pushbot: 9803 Blue", group="9803")
-public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
+@Autonomous(name="Pushbot: 9803 Blue Block", group="9803")
+public class PushbotAutoDriveByEncoder_ShooAndBlock extends LinearVisionOpMode {
     /* Declare OpMode members. */
     HardwarePushbotTeam9803 robot   = new HardwarePushbotTeam9803(  );   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
@@ -107,10 +105,16 @@ public class PushbotAutoDriveByEncoder_TestBlue extends LinearVisionOpMode {
 
         int x = 1;
         int colorCount = 0;
+        sleep(2000);
 
-        basicDrive(DRIVE_SPEED, 18, 18, 15); //Simple forward/backwards
-        sideDrive(DRIVE_SPEED, -60, 18); //Simple sideways, factored; defaults positives to right, use negative for left
-        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive
+        //Todo:Make values on both Blue&Red The Same/Correct - Elliott
+        basicDrive(DRIVE_SPEED, 45, 45, 15); //Simple forward/backwards
+        sideDrive(DRIVE_SPEED, -24, 18); //Simple sideways, factored; defaults positives to right, use negative for left
+        //encoderDrive(DRIVE_SPEED, 5, 5, 5, 5, 15); //Simple example of least abstract encoder drive.
+        basicDrive(DRIVE_SPEED, 14, 14, 15);
+        encoderDrive(DRIVE_SPEED, 4, -4, 4, -4 , 10);
+        basicDrive(DRIVE_SPEED, 52, 52, 20);
+        encoderDrive(DRIVE_SPEED, -5, 5, -5, 5, 10);
     }
 
     //Todo:Remove deprecated encoderDrive from original tank design.
